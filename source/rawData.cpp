@@ -37,10 +37,37 @@ rawData::rawData(
     phiTrack = pTrack;
     pX = rX;
     pY = rY;
-    pZ = rZ;
+    pY = rZ;
     vX = spdX;
     vY = spdY;
     vZ = spdZ;
+}
+
+void rawData::set_data_entry(TTree* tree,Int_t evIdx) { tree->GetEntry(evIdx); }
+
+bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector)
+{   
+    bool fStatus=false;
+    if(kRawFilter)
+    {
+        if(recEnergy>eLowThreshold)
+        {
+            TVector3 StkDirection;
+            TVector3 SatPosition;
+            TVector3 SatVelocity;
+            TVector3 eDir;
+            long pixIdx;
+
+            StkDirection.SetMagThetaPhi(1.,thetaTrack*D2R,phiTrack*D2R);
+            SatPosition.SetXYZ(pX,pY,pY);
+            SatVelocity.SetXYZ(vX,vY,vY);
+            eDir=Orb2Equ_RM(SatPosition,SatVelocity,StkDirection);
+            ang2pix_ring(nside,eDir.Theta(),eDir.Phi(),&pixIdx);
+            ++pixelVector[(ULong64_t)pixIdx];
+        }
+        fStatus=true;
+    }
+    return fStatus;
 }
 
 void rawData::getDataEvent()

@@ -13,8 +13,12 @@ ifeq ($(HAVE_TERM),dumb)
 endif
 
 #dependencie
-HEALPIX_LIBS = /Applications/Healpix_3.50/src/cxx/osx/libs
-HEALPIX_INCLUDE = /Applications/Healpix_3.50/src/cxx/osx/include
+HEALPIX_CPP_INCLUDE = /Applications/Healpix_3.50/src/cxx/osx/include
+HEALPIX_CPP_LIBS_PATH = /Applications/Healpix_3.50/src/cxx/osx/lib
+HEALPIX_C_INCLUDE = /Applications/Healpix_3.50/include
+HEALPIX_C_LIBS_PATH = /Applications/Healpix_3.50/lib
+HEALPIX_CPP_LIBS = -lhealpix_cxx -lcxxsupport -lsharp -lc_utils -lcfitsio
+HEALPIX_C_LIBS = -lchealpix
 
 DIPS_INCLUDE = $(shell root-config --cflags)
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
@@ -49,14 +53,14 @@ DEBUG_FLAGS = -g -D_DEBUG -Wall -Wno-unknown-pragmas
 LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
-	CC_FLAGS+= -I $(DIPS_INCLUDE) -I $(HEALPIX_INCLUDE)
-	LDFLAGS += $(DIPS_LIBS) -L$(HEALPIX_LIBS)
+	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(HEALPIX_CPP_INCLUDE) -I$(HEALPIX_C_INCLUDE)
+	LDFLAGS += $(DIPS_LIBS) -L$(HEALPIX_CPP_LIBS_PATH) $(HEALPIX_CPP_LIBS) -L$(HEALPIX_C_LIBS_PATH) $(HEALPIX_C_LIBS)
 endif
 ####################################################
 # Flags by OS
 ifeq ($(shell uname -s),Linux) # LINUX
 # threads
-C_FLAGS += -pthread
+C_FLAGS += -pthread 
 LDFLAGS += -lpthread
 endif
 
