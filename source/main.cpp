@@ -4,6 +4,7 @@ int main(int argc,char* argv[])
 {
     std::string inPath(argv[1]);
     std::string outMap,outIsoMap,outDiffMap;
+    TTree* dTree = nullptr;
 
     //////// Here comes the main
 
@@ -19,6 +20,27 @@ int main(int argc,char* argv[])
         std::cerr << "\n\nERRROR reading the input path: " << inPath;
         exit(100);
     }
+    
+    //Creating the data collection object
+    rawData dCollect;
+
+    //Extracting the data TTree from the input file
+    inFile.GetObject("dataTree",dTree);
+
+    //Linking the data TTree with the data pool variables
+    dCollect.link_tree(dTree);
+
+
+
+
+
+
+
+
+
+
+
+    //Writing down the final maps...h
 
     outMap = getMapAddress(inPath);
     outIsoMap = getMapAddress(inPath,true);

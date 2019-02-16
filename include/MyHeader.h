@@ -12,10 +12,13 @@
 #include "healpix_base.h"
 
 //ROOT includes
-
 #include "TFile.h"
+#include "TTree.h"
 #include "TVector3.h"
 #include "TRandom3.h"
+
+//Class headers
+#include "rawData.h"
 
 //Functions
 

@@ -6,9 +6,11 @@ std::string getMapAddress(std::string input_path,bool isomap,bool diffmap)
     std::string tmpName,tmpRoot;
     
     std::size_t sPosition = input_path.find_last_of("/\\");    
-    std::size_t fPosition = input_path.find_last_of(".");
-    tmpName = input_path.substr(sPosition+1,fPosition-1);
-    tmpRoot = input_path.substr(0,sPosition-1);
+    std::size_t fPosition = input_path.find(".");
+
+    tmpName = input_path.substr(sPosition+1,fPosition-sPosition-1);
+    tmpRoot = input_path.substr(0,sPosition);
+
     if(isomap)
         tmpName = tmpName.append("_isoMap.fits");
     else if(diffmap)
@@ -16,5 +18,5 @@ std::string getMapAddress(std::string input_path,bool isomap,bool diffmap)
     else
         tmpName = tmpName.append(".fits");
 
-    return outpath = tmpRoot+tmpName;
+    return outpath = tmpRoot + "/" + tmpName;
 }
