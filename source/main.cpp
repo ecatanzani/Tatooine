@@ -6,6 +6,7 @@ int main(int argc,char* argv[])
     std::string outMap,outIsoMap,outDiffMap;
     TTree* dTree = nullptr;
     long npix = nside2npix(nside);     //The number of pixels stored into the maps
+    ULong64_t filteredEv = 0;
 
     std::vector<ULong64_t> pixelDataMap;    //Stores the pixel content (how many times a pixel has been triggered) of the data map
     std::vector<ULong64_t> pixelIsoMap;     //Stores the pixel content (how many times a pixel has been triggered) of the isotropic data map - obtained through the shuffing technique
@@ -43,9 +44,10 @@ int main(int argc,char* argv[])
     initialize_maps(pixelDataMap,pixelIsoMap,npix);
 
     //Build the data map
-    build_data_map(pixelDataMap,dTree,dCollect);
+    build_data_map(pixelDataMap,dTree,dCollect,filteredEv);
 
-
+    //Shuffle the data map
+    shuffle_data_map(pixelIsoMap,pixelDataMap,dTree,dCollect,filteredEv);
 
 
 

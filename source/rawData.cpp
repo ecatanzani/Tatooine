@@ -43,14 +43,14 @@ rawData::rawData(
     vZ = spdZ;
 }
 
-void rawData::set_data_entry(TTree* tree,Int_t evIdx) { tree->GetEntry(evIdx); }
+void rawData::set_data_entry(TTree* tree,ULong64_t evIdx) { tree->GetEntry(evIdx); }
 
 bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector)
 {   
     bool fStatus=false;
     if(kRawFilter)
     {
-        if(recEnergy>eLowThreshold)
+        if(eventEnergyCut())
         {
             TVector3 StkDirection;
             TVector3 SatPosition;
@@ -68,6 +68,16 @@ bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector)
         fStatus=true;
     }
     return fStatus;
+}
+
+bool rawData::eventEnergyCut(Double_t eCut)
+{
+    bool ECut=false;
+
+    if(recEnergy>eCut)
+        ECut=true;
+    
+    return ECut;
 }
 
 void rawData::getDataEvent()

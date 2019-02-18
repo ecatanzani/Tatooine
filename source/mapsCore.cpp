@@ -9,21 +9,43 @@ void initialize_maps(std::vector<ULong64_t> &pixelDataMap,std::vector<ULong64_t>
     }
 }
 
-void build_data_map(std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &dCollect)
+void build_data_map(std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &dCollect,ULong64_t &filteredEv)
 {
-    Int_t evNum = dTree->GetEntries();
-    Int_t prEvents=0;
+    ULong64_t evNum = dTree->GetEntries();
     
-    for(Int_t evIdx=0; evIdx<evNum; ++evIdx)
+    for(ULong64_t evIdx=0; evIdx<evNum; ++evIdx)
     {
         dCollect.set_data_entry(dTree,evIdx);
         if(dCollect.maps_filler(pixelDataMap))
-            ++prEvents;
+            ++filteredEv;
     }
 
     if(kVerbose)
-        std::cout << "\nProcessed " << prEvents << "events on " << evNum << std::endl;
+        std::cout << "\nProcessed " << filteredEv << "events on " << evNum << std::endl;
 
+}
+
+void shuffle_data_map(std::vector<ULong64_t> &pixelIsoMap,std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &dCollect,ULong64_t &filteredEv)
+{
+    ULong64_t evNum = dTree->GetEntries();
+    std::vector<ULong64_t> linkedEv;
+    linkedEv.resize(filteredEv);
+    TRandom3 r_gen(SEED);
+    ULong64_t tmpLink = 0;
+
+    for(ULong64_t evIdx=0; evIdx<evNum; ++evIdx)
+    {
+        dCollect.set_data_entry(dTree,evIdx);
+        if(dCollect.eventEnergyCut())
+            if(!evIdx)
+            {
+                do
+                    tmpLink = r_gen.Uniform(0,evNum);
+                while(checkIfUsed(tmpLink,linkedEv));
+                linkedEv[evIdx] = tmpLink;
+            }
+        pixelIsoMap[evIdx] = pixelDataMap[linkedEv[evIdx]];
+    }
 }
 
 //Module Transforming Orbital Coord into Galactic Coord based on Coord Rotation

@@ -3,6 +3,9 @@
 
 #include "MyHeader.h"
 
+//Insert into a configuration file
+#define eLowThreshold 60    //Low energy threshold (expressed in GeV)
+
 class rawData
 {
 
@@ -38,9 +41,9 @@ class rawData
                                 Double_t spdZ
                             );
 
-        void set_data_entry(TTree* tree,Int_t evIdx);
+        void set_data_entry(TTree* tree,ULong64_t evIdx);
         bool maps_filler(std::vector<ULong64_t> &pixelVector);
-
+        bool eventEnergyCut(Double_t eCut=eLowThreshold);
         void getDataEvent();
 
         void link_tree(TTree* tree);
