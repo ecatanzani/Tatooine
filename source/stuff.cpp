@@ -14,3 +14,12 @@ bool checkIfUsed(ULong64_t tmpElement,std::vector<ULong64_t> &elements)
 
     return status; 
 }
+
+bool stringToBool(std::string tmp_str)
+{
+    bool kStat = true;
+    if(tmp_str=="false")
+        kStat = false;
+
+    return kStat;
+}

@@ -45,7 +45,7 @@ rawData::rawData(
 
 void rawData::set_data_entry(TTree* tree,ULong64_t evIdx) { tree->GetEntry(evIdx); }
 
-bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector)
+bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector,const bool kRawFilter,const Int_t nside)
 {   
     bool fStatus=false;
     if(kRawFilter)

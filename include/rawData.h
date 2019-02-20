@@ -42,7 +42,7 @@ class rawData
                             );
 
         void set_data_entry(TTree* tree,ULong64_t evIdx);
-        bool maps_filler(std::vector<ULong64_t> &pixelVector);
+        bool maps_filler(std::vector<ULong64_t> &pixelVector,const bool kRawFilter,const Int_t nside);
         bool eventEnergyCut(Double_t eCut=eLowThreshold);
         void getDataEvent();
 

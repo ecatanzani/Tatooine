@@ -1,6 +1,6 @@
 #include "MyHeader.h"
 
-void initialize_maps(std::vector<ULong64_t> &pixelDataMap,std::vector<ULong64_t> &pixelIsoMap,long nPixels)
+void initialize_maps(std::vector<ULong64_t> &pixelDataMap,std::vector<Double_t> &pixelIsoMap,long nPixels)
 {
     for(Int_t p_idx=0; p_idx<nPixels; ++p_idx)
     {
@@ -9,14 +9,21 @@ void initialize_maps(std::vector<ULong64_t> &pixelDataMap,std::vector<ULong64_t>
     }
 }
 
-void build_data_map(std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &dCollect,ULong64_t &filteredEv)
+void build_data_map(
+                        std::vector<ULong64_t> &pixelDataMap,
+                        TTree* dTree,rawData &dCollect,
+                        ULong64_t &filteredEv,
+                        const bool kVerbose,
+                        const bool kRawFilter,
+                        const Int_t nside
+                    )
 {
     ULong64_t evNum = dTree->GetEntries();
     
     for(ULong64_t evIdx=0; evIdx<evNum; ++evIdx)
     {
         dCollect.set_data_entry(dTree,evIdx);
-        if(dCollect.maps_filler(pixelDataMap))
+        if(dCollect.maps_filler(pixelDataMap,kRawFilter,nside))
             ++filteredEv;
     }
 
@@ -25,7 +32,14 @@ void build_data_map(std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &d
 
 }
 
-void shuffle_data_map(std::vector<ULong64_t> &pixelIsoMap,std::vector<ULong64_t> &pixelDataMap,TTree* dTree,rawData &dCollect,ULong64_t &filteredEv)
+void shuffle_data_map(
+                        std::vector<Double_t> &pixelIsoMap,
+                        std::vector<ULong64_t> &pixelDataMap,
+                        TTree* dTree,
+                        rawData &dCollect,
+                        ULong64_t &filteredEv,
+                        const UInt_t SEED
+                    )
 {
     ULong64_t evNum = dTree->GetEntries();
     std::vector<ULong64_t> linkedEv;
@@ -46,6 +60,18 @@ void shuffle_data_map(std::vector<ULong64_t> &pixelIsoMap,std::vector<ULong64_t>
             }
         pixelIsoMap[evIdx] = pixelDataMap[linkedEv[evIdx]];
     }
+}
+
+void get_mean_iso_map(std::vector<Double_t> &pixelIsoMap,const Int_t shufflePasses)
+{
+    for(ULong64_t idx=0; idx<pixelIsoMap.size(); ++idx)
+        pixelIsoMap[idx] /= shufflePasses;
+}
+
+void get_diff_map(std::vector<ULong64_t> &pixelDataMap,std::vector<Double_t> &pixelIsoMap,std::vector<Double_t> &pixelDiffMap)
+{
+    for(ULong64_t idx=0; idx<pixelIsoMap.size(); ++idx)
+        pixelDiffMap[idx] = pixelDataMap[idx]/(Double_t)pixelIsoMap[idx] -1;
 }
 
 //Module Transforming Orbital Coord into Galactic Coord based on Coord Rotation
