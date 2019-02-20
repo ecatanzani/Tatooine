@@ -36,7 +36,13 @@ extern void getParameters(
                             ULong64_t &SEED
                         );
 
-extern std::string getMapAddress(std::string input_path,bool isomap=false,bool diffmap=false);
+extern std::string getMapAddress(
+                                    std::string input_path,
+                                    bool isomap=false,
+                                    bool diffmap=false,
+                                    bool binary=false
+                                );
+
 extern void initialize_maps(std::vector<ULong64_t> &pixelDataMap,std::vector<Double_t> &pixelIsoMap,long nPixels);
 
 extern void build_data_map(
@@ -62,5 +68,27 @@ extern void get_mean_iso_map(std::vector<Double_t> &pixelIsoMap,const Int_t shuf
 extern void get_diff_map(std::vector<ULong64_t> &pixelDataMap,std::vector<Double_t> &pixelIsoMap,std::vector<Double_t> &pixelDiffMap);
 extern TVector3 Orb2Equ_RM(const TVector3& r_sat, const TVector3& v_sat, const TVector3& r_Track);
 extern bool stringToBool(std::string tmp_str);
+
+extern void write_floatFinal_maps(
+                                    const std::string outMap,
+                                    const std::string outIsoMap,
+                                    const std::string outDiffMap,
+                                    const std::vector<ULong64_t> &pixelDataMap,
+                                    const std::vector<Double_t> &pixelIsoMap,
+                                    const std::vector<Double_t> &pixelDiffMap,
+                                    const Int_t nside
+                                );
+
+extern void write_dbinary_map(
+                                const std::vector<Double_t> &pixelMap,
+                                const std::string outPath,
+                                const long npix
+                            );
+
+extern void write_ubinary_map(
+                                const std::vector<ULong64_t> &pixelMap,
+                                const std::string outPath,
+                                const long npix
+                            );
 
 #endif

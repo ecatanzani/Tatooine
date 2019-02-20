@@ -4,6 +4,7 @@ int main(int argc,char* argv[])
 {
     std::string inPath(argv[1]);
     std::string outMap,outIsoMap,outDiffMap;
+    std::string outBinMap,outBinIsoMap,outBinDiffMap;
     TTree* dTree = nullptr;
 
     std::vector<ULong64_t> pixelDataMap;    //Stores the pixel content (how many times a pixel has been triggered) of the data map
@@ -43,6 +44,32 @@ int main(int argc,char* argv[])
 
     npix = nside2npix(nside);       //Define the number of pixels into the maps
 
+    //Building final output paths
+    outMap = getMapAddress(inPath);
+    outIsoMap = getMapAddress(inPath,true);
+    outDiffMap = getMapAddress(inPath,false,true);
+
+    outBinMap = getMapAddress(
+                                inPath,
+                                false,
+                                false,
+                                true
+                            );
+
+    outBinIsoMap = getMapAddress(
+                                    inPath,
+                                    true,
+                                    false,
+                                    true
+                                );
+
+    outBinDiffMap = getMapAddress(
+                                    inPath,
+                                    false,
+                                    true,
+                                    true
+                                );
+
     //Resize maps pixel counters vectors
     pixelDataMap.resize(npix);
     pixelIsoMap.resize(npix);
@@ -73,14 +100,34 @@ int main(int argc,char* argv[])
     //Get the differentiate map
     get_diff_map(pixelDataMap,pixelIsoMap,pixelDiffMap);
 
-    //Writing down the final maps...
-    outMap = getMapAddress(inPath);
-    outIsoMap = getMapAddress(inPath,true);
-    outDiffMap = getMapAddress(inPath,false,true);
+    //Writing down the final maps
+    write_floatFinal_maps(
+                            outMap,
+                            outIsoMap,
+                            outDiffMap,
+                            pixelDataMap,
+                            pixelIsoMap,
+                            pixelDiffMap,
+                            nside
+                        );
 
-    //write_healpix_map(&pixelDataMap[0],nside,outMap.c_str(),0,"G");
-    //write_healpix_map(&(float)pixelIsoMap[0],nside,outIsoMap.c_str(),0,"G");
-    //write_healpix_map(&(float)pixelDiffMap[0],nside,outDiffMap.c_str(),0,"G");
+    write_ubinary_map(
+                        pixelDataMap,
+                        outBinMap,
+                        npix
+                    );
+
+    write_dbinary_map(
+                        pixelIsoMap,
+                        outBinIsoMap,
+                        npix
+                    );
+    
+    write_dbinary_map(
+                        pixelDiffMap,
+                        outBinDiffMap,
+                        npix
+                    );
 
     return 0;
 }

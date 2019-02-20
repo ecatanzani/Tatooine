@@ -1,6 +1,6 @@
 #include "MyHeader.h"
 
-std::string getMapAddress(std::string input_path,bool isomap,bool diffmap)
+std::string getMapAddress(std::string input_path,bool isomap,bool diffmap,bool binary)
 {
     std::string outpath;
     std::string tmpName,tmpRoot;
@@ -12,11 +12,20 @@ std::string getMapAddress(std::string input_path,bool isomap,bool diffmap)
     tmpRoot = input_path.substr(0,sPosition);
 
     if(isomap)
-        tmpName = tmpName.append("_isoMap.fits");
+        if(binary)
+           tmpName = tmpName.append("_isoMap.dat");
+        else 
+            tmpName = tmpName.append("_isoMap.fits");
     else if(diffmap)
-        tmpName = tmpName.append("_diffMap.fits");
+        if(binary)
+            tmpName = tmpName.append("_diffMap.dat");
+        else
+            tmpName = tmpName.append("_diffMap.fits");
     else
-        tmpName = tmpName.append(".fits");
+        if(binary)
+            tmpName = tmpName.append(".dat");
+        else    
+            tmpName = tmpName.append(".fits");
 
     return outpath = tmpRoot + "/" + tmpName;
 }
