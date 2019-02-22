@@ -45,12 +45,17 @@ rawData::rawData(
 
 void rawData::set_data_entry(TTree* tree,ULong64_t evIdx) { tree->GetEntry(evIdx); }
 
-bool rawData::maps_filler(std::vector<ULong64_t> &pixelVector,const bool kRawFilter,const Int_t nside)
+bool rawData::maps_filler(
+                            std::vector<ULong64_t> &pixelVector,
+                            const bool kRawFilter,
+                            const Int_t nside,
+                            const Double_t eLowThreshold
+                        )
 {   
     bool fStatus=false;
     if(kRawFilter)
     {
-        if(eventEnergyCut())
+        if(eventEnergyCut(eLowThreshold))
         {
             TVector3 StkDirection;
             TVector3 SatPosition;
@@ -103,8 +108,8 @@ void rawData::getDataEvent()
 void rawData::link_tree(TTree* tree)
 {
     tree->SetBranchAddress("DAMPE_timestamp",&evTime);
-    tree->SetBranchAddress("BGO_energy",&bgoEnergy);
-    tree->SetBranchAddress("REC_energy",&recEnergy);
+    //tree->SetBranchAddress("BGO_energy",&bgoEnergy);
+    tree->SetBranchAddress("energy",&recEnergy);
     tree->SetBranchAddress("STK_theta",&thetaTrack);
     tree->SetBranchAddress("STK_phi",&phiTrack);
 

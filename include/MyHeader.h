@@ -33,6 +33,7 @@ extern void getParameters(
                             bool &kRawFilter,
                             bool &kVerbose,
                             Int_t &shufflePasses,
+                            Double_t &eLowThreshold,
                             ULong64_t &SEED
                         );
 
@@ -51,7 +52,8 @@ extern void build_data_map(
                             ULong64_t &filteredEv,
                             const bool kVerbose,
                             const bool kRawFilter,
-                            const Int_t nside
+                            const Int_t nside,
+                            const Double_t eLowThreshold
                         );
 
 extern void shuffle_data_map(
@@ -59,8 +61,9 @@ extern void shuffle_data_map(
                                 std::vector<ULong64_t> &pixelDataMap,
                                 TTree* dTree,
                                 rawData &dCollect,
-                                ULong64_t &filteredEv,
-                                const UInt_t SEED
+                                const ULong64_t filteredEv,
+                                const UInt_t SEED,
+                                const Double_t eLowThreshold
                             );
 
 extern bool checkIfUsed(ULong64_t tmpElement,std::vector<ULong64_t> &elements);

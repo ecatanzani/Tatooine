@@ -5,6 +5,7 @@ void getParameters(
                     bool &kRawFilter,
                     bool &kVerbose,
                     Int_t &shufflePasses,
+                    Double_t &eLowThreshold,
                     ULong64_t &SEED
                 )
 {
@@ -41,6 +42,11 @@ void getParameters(
             input_stream>>tmp_str;
             shufflePasses = stoi(tmp_str,NULL,10);
         }
+        if(tmp_str == "eLowThreshold")
+        {
+            input_stream>>tmp_str;
+            eLowThreshold = stod(tmp_str,NULL);
+        }
         if(tmp_str == "shuffleSeed")
         {
             input_stream>>tmp_str;
@@ -59,6 +65,7 @@ void getParameters(
         std::cout << "kRawFilter \t" << kRawFilter << std::endl;
         std::cout << "kVerbose \t" << kVerbose << std::endl;
         std::cout << "shufflePasses \t" << shufflePasses << std::endl;
+        std::cout << "eLowThreshold \t" << eLowThreshold << std::endl;
         std::cout << "shuffleSeed \t" << SEED << std::endl;
 
         std::cout << "\n****************\n";

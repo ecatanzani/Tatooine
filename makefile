@@ -13,12 +13,25 @@ ifeq ($(HAVE_TERM),dumb)
 endif
 
 #dependencie
-HEALPIX_CPP_INCLUDE = /Applications/Healpix_3.50/src/cxx/osx/include
-HEALPIX_CPP_LIBS_PATH = /Applications/Healpix_3.50/src/cxx/osx/lib
-HEALPIX_C_INCLUDE = /Applications/Healpix_3.50/include
-HEALPIX_C_LIBS_PATH = /Applications/Healpix_3.50/lib
-HEALPIX_CPP_LIBS = -lhealpix_cxx -lcxxsupport -lsharp -lc_utils -lcfitsio
-HEALPIX_C_LIBS = -lchealpix
+CNAF_PATH = /home/DAMPE/ecatanzani
+ifeq ($(shell uname -s),Linux) # LINUX
+    ifneq ("$(wildcard $(CNAF_PATH))","")
+        HEALPIX_CPP_INCLUDE = /home/DAMPE/ecatanzani/bin/Healpix_3.50/src/cxx/basic_gcc/include
+		HEALPIX_CPP_LIBS_PATH = /home/DAMPE/ecatanzani/bin/Healpix_3.50/src/cxx/basic_gcc/bin
+		HEALPIX_C_INCLUDE = /home/DAMPE/ecatanzani/bin/Healpix_3.50/include
+		HEALPIX_C_LIBS_PATH = /home/DAMPE/ecatanzani/bin/Healpix_3.50/lib
+		HEALPIX_CPP_LIBS = -lhealpix_cxx -lcxxsupport -lsharp -lc_utils -lcfitsio
+		HEALPIX_C_LIBS = -lchealpix
+    endif
+else
+	HEALPIX_CPP_INCLUDE = /Applications/Healpix_3.50/src/cxx/osx/include
+	HEALPIX_CPP_LIBS_PATH = /Applications/Healpix_3.50/src/cxx/osx/lib
+	HEALPIX_C_INCLUDE = /Applications/Healpix_3.50/include
+	HEALPIX_C_LIBS_PATH = /Applications/Healpix_3.50/lib
+	HEALPIX_CPP_LIBS = -lhealpix_cxx -lcxxsupport -lsharp -lc_utils -lcfitsio
+	HEALPIX_C_LIBS = -lchealpix
+endif
+
 
 DIPS_INCLUDE = $(shell root-config --cflags)
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)

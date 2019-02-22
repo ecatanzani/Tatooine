@@ -15,7 +15,8 @@ void build_data_map(
                         ULong64_t &filteredEv,
                         const bool kVerbose,
                         const bool kRawFilter,
-                        const Int_t nside
+                        const Int_t nside,
+                        const Double_t eLowThreshold
                     )
 {
     ULong64_t evNum = dTree->GetEntries();
@@ -23,13 +24,12 @@ void build_data_map(
     for(ULong64_t evIdx=0; evIdx<evNum; ++evIdx)
     {
         dCollect.set_data_entry(dTree,evIdx);
-        if(dCollect.maps_filler(pixelDataMap,kRawFilter,nside))
+        if(dCollect.maps_filler(pixelDataMap,kRawFilter,nside,eLowThreshold))
             ++filteredEv;
     }
 
     if(kVerbose)
-        std::cout << "\nProcessed " << filteredEv << "events on " << evNum << std::endl;
-
+        std::cout << "\t [Processed " << filteredEv << " events on " << evNum << "]";
 }
 
 void shuffle_data_map(
@@ -37,29 +37,34 @@ void shuffle_data_map(
                         std::vector<ULong64_t> &pixelDataMap,
                         TTree* dTree,
                         rawData &dCollect,
-                        ULong64_t &filteredEv,
-                        const UInt_t SEED
+                        const ULong64_t filteredEv,
+                        const UInt_t SEED,
+                        const Double_t eLowThreshold
                     )
 {
     ULong64_t evNum = dTree->GetEntries();
     std::vector<ULong64_t> linkedEv;
     linkedEv.resize(filteredEv);
     TRandom3 r_gen(SEED);
-    ULong64_t tmpLink = 0;
-
+    ULong64_t tmpLink=0;
+    
     for(ULong64_t evIdx=0; evIdx<evNum; ++evIdx)
     {
         dCollect.set_data_entry(dTree,evIdx);
-        if(dCollect.eventEnergyCut())
-            if(!evIdx)
+        if(dCollect.eventEnergyCut(eLowThreshold))
+        {   
+            do
+            //for(int i=0; i<100; ++i)
             {
-                do
-                    tmpLink = r_gen.Uniform(0,evNum);
-                while(checkIfUsed(tmpLink,linkedEv));
-                linkedEv[evIdx] = tmpLink;
+                tmpLink = (ULong64_t)r_gen.Uniform(0,filteredEv);
+                if(!evIdx)
+                    break;
             }
-        pixelIsoMap[evIdx] = pixelDataMap[linkedEv[evIdx]];
-    }
+            while(checkIfUsed(tmpLink,linkedEv));
+            linkedEv[evIdx] = tmpLink;
+            pixelIsoMap[evIdx] = pixelDataMap[linkedEv[evIdx]];       
+        }
+    }    
 }
 
 void get_mean_iso_map(std::vector<Double_t> &pixelIsoMap,const Int_t shufflePasses)
